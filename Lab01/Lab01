@@ -1,0 +1,94 @@
+#!/usr/bin/python3
+
+import math
+
+
+def calculate_roots(coef):
+    a2 = coef[0]
+    a1 = coef[1]
+    a0 = coef[2]
+
+    discriminant = a1 ** 2 - 4 * a2 * a0
+    if discriminant < 0:
+        root1 = complex(-a1 / (2 * a2), math.sqrt(-discriminant) / (2 * a2))
+        root2 = complex(-a1 / (2 * a2), -math.sqrt(-discriminant) / (2 * a2))
+
+    elif discriminant == 0:
+        root1 = -a1 / (2 * a2)
+        root2 = None
+
+    else:
+        root1 = (-a1 + math.sqrt(discriminant)) / (2 * a2)
+        root2 = (-a1 - math.sqrt(discriminant)) / (2 * a2)
+
+    return (root1, root2) if root2 is not None else (root1,)
+
+
+def compute_factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * compute_factorial(n - 1)
+
+
+def sum_factorial(n):
+    total = 0
+    for i in range(1, n + 1):
+        total += compute_factorial(i)
+
+    return total
+
+
+def f_x(x):
+    return math.exp(-3 * x) * math.cos(math.pi * x)
+
+
+# def left_riemann(delta_x, lb, ub):
+#     total = 0
+#     x = lb
+#     while x < ub:
+#         t = f_x(x) * delta_x
+#         total = t + total
+#         # total += f_x(x) * delta_x
+#         x += delta_x
+#     return total
+
+def left_riemann(delta_x, lb, ub):
+    total = 0
+    x = lb
+    while x < ub:
+        t = f_x(x) * delta_x
+        total = t + total
+        x += delta_x
+
+    desired_relative_error = 1e-20
+    total = round(total / desired_relative_error) * desired_relative_error
+    return total
+
+
+def right_riemann(delta_x, lb, ub):
+    total = 0
+    x = lb + delta_x
+    while x <= ub:
+        total += f_x(x) * delta_x
+        x += delta_x
+    return total
+
+
+def midpoint_riemann(delta_x, lb, ub):
+    total = 0
+    x = lb + (delta_x / 2)
+    while x <= ub:
+        total += f_x(x) * delta_x
+        x += delta_x
+    return total
+
+
+def trap_riemann(delta_x, lb, ub):
+    total = 0
+    x = lb
+    while x < (ub-(delta_x / 2)):
+        total += (f_x(x - delta_x) + f_x(x)) * (delta_x / 2)
+        x += delta_x
+    return total
+
